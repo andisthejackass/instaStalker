@@ -31,8 +31,10 @@ get "/stalker" do
 
   html = "<h1>#{user.username}'s recent photos | #{user.id}</h1>"
   for media_item in client.user_recent_media(options={:count => "-1"})
-    html << "<h3>#{count}</h3>. Long:#{media_item.location.longitude unless media_item.location.nil?}"
-    count = count + 1
+    if media_item.location != nil
+      html << "#{count}. #{media_item.location.latitude.to_s[0..5] + media_item.location.longitude.to_s[0..5]}</br>"
+      count = count + 1
+    end
   end
   html
 end

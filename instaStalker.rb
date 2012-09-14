@@ -21,66 +21,76 @@ end
 get "/oauth/callback" do
   response = Instagram.get_access_token(params[:code], :redirect_uri => CALLBACK_URL)
   session[:access_token] = response.access_token
-  redirect "/stalker"
+  redirect "/search"
 end
 
-get "/stalker" do
+get "/search" do
+  'Search here :)'
+end
+
+get "/stalker/:victim" do
+  victim = params[:victim]
+  victim_ig = Instagram.user_search(victim,options={:access_token => session[:access_token]}).first
   client = Instagram.client(:access_token => session[:access_token])
-  user = client.user
+  user = victim_ig
   count = 0
   array = []
-
-  html = "<!DOCTYPE html><html><head><h1>instaStalker for user <b>#{user.username}</b> | ID: #{user.id}</h1>"
-  for media_item in client.user_recent_media(options={:count => "-1"})
-    if media_item.location != nil
-      count = count + 1
-      location = media_item.location.latitude.to_s[0..5] + media_item.location.longitude.to_s[0..5]
-      array = array + [location]
+  if user != nil
+    html = "<!DOCTYPE html><html><head><h1>instaStalker for user <b>#{user.username}</b> | ID: #{user.id}</h1>"
+    for media_item in client.user_recent_media(user.id, options={:count => "-1"})
+      if media_item.location != nil
+        count = count + 1
+        location = media_item.location.latitude.to_s[0..5] + media_item.location.longitude.to_s[0..5]
+        array = array + [location]
+      end
     end
-  end
-  freq = array.inject(Hash.new(0)) { |h,v| h[v] += 1; h }
-  victim_location = array.sort_by { |v| freq[v] }.last.scan(/.{6}|.+/).join(",")
-  html << "Out of #{count} locations, the victim's location is probaly <b>#{victim_location}</b>"
-  html << '<style type"text/css">html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-#map_canvas {
-     height: 550px;
-    width: 800px
-}
-
-@media print {
-  html, body {
-    height: auto;
+    freq = array.inject(Hash.new(0)) { |h,v| h[v] += 1; h }
+    victim_location = array.sort_by { |v| freq[v] }.last.scan(/.{6}|.+/).join(",")
+    html << "Out of #{count} locations, the victim's location is probaly <b>#{victim_location}</b>"
+    html << '<style type"text/css">html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
   }
 
   #map_canvas {
-    height: 650px;
+       height: 550px;
+      width: 800px
   }
-}</style><script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
-    <script>
-      function initialize() {
-        var myLatlng = new google.maps.LatLng(' + victim_location + ');
-        var mapOptions = {
-          zoom: 13,
-          center: myLatlng,
-          mapTypeId: google.maps.MapTypeId.ROADMAP
+
+  @media print {
+    html, body {
+      height: auto;
+    }
+
+    #map_canvas {
+      height: 650px;
+    }
+  }</style><script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+      <script>
+        function initialize() {
+          var myLatlng = new google.maps.LatLng(' + victim_location + ');
+          var mapOptions = {
+            zoom: 13,
+            center: myLatlng,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+          }
+          var map = new google.maps.Map(document.getElementById(\'map_canvas\'), mapOptions);
+
+          var marker = new google.maps.Marker({
+              position: myLatlng,
+              map: map,
+              title: \'Hello World!\'
+          });
         }
-        var map = new google.maps.Map(document.getElementById(\'map_canvas\'), mapOptions);
-
-        var marker = new google.maps.Marker({
-            position: myLatlng,
-            map: map,
-            title: \'Hello World!\'
-        });
-      }
-    </script></head>
-      <body onload="initialize()">
-    <div id="map_canvas"></div>
-  </body></html>'
-
-  html
+      </script></head>
+        <body onload="initialize()">
+      <div id="map_canvas"></div>
+    </body></html>'
+   end
+  if victim_ig.nil?
+    '<h1>Sorry, user not found :/'
+  else
+    html
+  end
 end

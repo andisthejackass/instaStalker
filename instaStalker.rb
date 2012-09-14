@@ -25,9 +25,14 @@ get "/oauth/callback" do
 end
 
 get "/search" do
-  'Search here :)'
+  '<form action="/form" method="post">
+  <input type="text" name="victim">
+  <input type="submit">
+  </form>'
 end
-
+post '/form' do
+  redirect "/stalker/" + params[:victim]
+end
 get "/stalker/:victim" do
   victim = params[:victim]
   victim_ig = Instagram.user_search(victim,options={:access_token => session[:access_token]}).first
@@ -35,8 +40,9 @@ get "/stalker/:victim" do
   user = victim_ig
   count = 0
   array = []
+  a = []
   if user != nil
-    html = "<!DOCTYPE html><html><head><h1>instaStalker for user <b>#{user.username}</b> | ID: #{user.id}</h1>"
+    html = "<!DOCTYPE html><html><head><h1>instaStalker for user <b>#{user.username}</b> | ID: #{user.id}</h1></br><a href='../search'>New Search</a></br>"
     for media_item in client.user_recent_media(user.id, options={:count => "-1"})
       if media_item.location != nil
         count = count + 1
@@ -47,26 +53,8 @@ get "/stalker/:victim" do
     freq = array.inject(Hash.new(0)) { |h,v| h[v] += 1; h }
     victim_location = array.sort_by { |v| freq[v] }.last.scan(/.{6}|.+/).join(",")
     html << "Out of #{count} locations, the victim's location is probaly <b>#{victim_location}</b>"
-    html << '<style type"text/css">html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-  }
-
-  #map_canvas {
-       height: 550px;
-      width: 800px
-  }
-
-  @media print {
-    html, body {
-      height: auto;
-    }
-
-    #map_canvas {
-      height: 650px;
-    }
-  }</style><script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+    html << '<link rel="stylesheet" type="text/css" href="../css/style.css" />'
+    html << '</style><script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
       <script>
         function initialize() {
           var myLatlng = new google.maps.LatLng(' + victim_location + ');

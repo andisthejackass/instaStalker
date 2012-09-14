@@ -27,14 +27,60 @@ end
 get "/stalker" do
   client = Instagram.client(:access_token => session[:access_token])
   user = client.user
-  count = 1
+  count = 0
+  array = []
 
-  html = "<h1>#{user.username}'s recent photos | #{user.id}</h1>"
+  html = "<!DOCTYPE html><html><head><h1>instaStalker for user <b>#{user.username}</b> | ID: #{user.id}</h1>"
   for media_item in client.user_recent_media(options={:count => "-1"})
     if media_item.location != nil
-      html << "#{count}. #{media_item.location.latitude.to_s[0..5] + media_item.location.longitude.to_s[0..5]}</br>"
       count = count + 1
+      location = media_item.location.latitude.to_s[0..5] + media_item.location.longitude.to_s[0..5]
+      array = array + [location]
     end
   end
+  freq = array.inject(Hash.new(0)) { |h,v| h[v] += 1; h }
+  victim_location = array.sort_by { |v| freq[v] }.last.scan(/.{6}|.+/).join(",")
+  html << "Out of #{count} locations, the victim's location is probaly <b>#{victim_location}</b>"
+  html << '<style type"text/css">html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#map_canvas {
+     height: 550px;
+    width: 800px
+}
+
+@media print {
+  html, body {
+    height: auto;
+  }
+
+  #map_canvas {
+    height: 650px;
+  }
+}</style><script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+    <script>
+      function initialize() {
+        var myLatlng = new google.maps.LatLng(' + victim_location + ');
+        var mapOptions = {
+          zoom: 13,
+          center: myLatlng,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        }
+        var map = new google.maps.Map(document.getElementById(\'map_canvas\'), mapOptions);
+
+        var marker = new google.maps.Marker({
+            position: myLatlng,
+            map: map,
+            title: \'Hello World!\'
+        });
+      }
+    </script></head>
+      <body onload="initialize()">
+    <div id="map_canvas"></div>
+  </body></html>'
+
   html
 end

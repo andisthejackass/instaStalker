@@ -43,7 +43,7 @@ get "/stalker/:victim" do
   array = []
   a = []
   if user != nil
-    html = "<!DOCTYPE html><html><head><h1>instaStalker for user <b>#{user.username}</b> | ID: #{user.id}</h1></br><a href='../search'>New Search</a></br>"
+    html = "<!DOCTYPE html><html><head><h1>instaStalker for user <b>#{user.username}</b> <img src='#{user.profile_picture}'></img>| ID: #{user.id}</h1></br><a href='../search'>New Search</a></br>"
     for media_item in client.user_recent_media(user.id, options={:count => "-1"})
       if media_item.location != nil
         count = count + 1

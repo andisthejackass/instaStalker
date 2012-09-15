@@ -87,7 +87,7 @@ get "/stalker/:victim" do
         <div id="map_canvas"></div>
       </body></html>'
     else
-      html << "Sorry, #{user.username} hasn't geotagged any photos :/"
+      html << "Sorry, #{user.username} hasn't geotagged any photos :/</br>"
     end
    end
   if victim_ig.nil?

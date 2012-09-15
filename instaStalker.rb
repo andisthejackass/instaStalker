@@ -91,7 +91,7 @@ get "/stalker/:victim" do
     end
    end
   if victim_ig.nil?
-    '<center><h1>Sorry, user not found :/</br>' + links
+    '<center><h1>Sorry, user not found :/</h1></br><a href="javascript: history.go(-1)">Back to instaStalker</a></br>' + links
   else
     html + links
   end

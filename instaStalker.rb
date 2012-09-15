@@ -25,9 +25,10 @@ get "/oauth/callback" do
 end
 
 get "/search" do
-  '<form action="/form" method="post">
+  '<h1>Enter a username you want to search: </br>
+  <form action="/form" method="post">
   <input type="text" name="victim">
-  <input type="submit">
+  <input type="submit" value="Stalk!">
   </form>'
 end
 post '/form' do
@@ -51,30 +52,35 @@ get "/stalker/:victim" do
       end
     end
     freq = array.inject(Hash.new(0)) { |h,v| h[v] += 1; h }
-    victim_location = array.sort_by { |v| freq[v] }.last.scan(/.{6}|.+/).join(",")
-    html << "Out of #{count} locations, the victim's location is probaly <b>#{victim_location}</b>"
-    html << '<link rel="stylesheet" type="text/css" href="../css/style.css" />'
-    html << '</style><script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
-      <script>
-        function initialize() {
-          var myLatlng = new google.maps.LatLng(' + victim_location + ');
-          var mapOptions = {
-            zoom: 13,
-            center: myLatlng,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-          }
-          var map = new google.maps.Map(document.getElementById(\'map_canvas\'), mapOptions);
+    top_array = array.sort_by { |v| freq[v] }.last
+    if top_array != nil
+      victim_location = top_array.scan(/.{6}|.+/).join(",")
+      html << "Out of #{count} locations, the victim's location is probaly <b>#{victim_location}</b>"
+      html << '<link rel="stylesheet" type="text/css" href="../css/style.css" />'
+      html << '</style><script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+        <script>
+          function initialize() {
+            var myLatlng = new google.maps.LatLng(' + victim_location + ');
+            var mapOptions = {
+              zoom: 13,
+              center: myLatlng,
+              mapTypeId: google.maps.MapTypeId.ROADMAP
+            }
+            var map = new google.maps.Map(document.getElementById(\'map_canvas\'), mapOptions);
 
-          var marker = new google.maps.Marker({
-              position: myLatlng,
-              map: map,
-              title: \'Hello World!\'
-          });
-        }
-      </script></head>
-        <body onload="initialize()">
-      <div id="map_canvas"></div>
-    </body></html>'
+            var marker = new google.maps.Marker({
+                position: myLatlng,
+                map: map,
+                title: \'Hello World!\'
+            });
+          }
+        </script></head>
+          <body onload="initialize()">
+        <div id="map_canvas"></div>
+      </body></html>'
+    else
+      html << "No locs - sorry"
+    end
    end
   if victim_ig.nil?
     '<h1>Sorry, user not found :/'

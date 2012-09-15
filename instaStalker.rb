@@ -15,7 +15,7 @@ get "/" do
   <center><h1>In order to use instaStalker, you need to authorize it first
   <div id="connect_container">
     <a href="/oauth/connect" id="connect"><span class="wootspan"></span></a>
-  </div>'
+  </div>' + links
 end
 
 get "/oauth/connect" do
@@ -33,7 +33,7 @@ get "/search" do
   <form action="/form" method="post">
   <input type="text" name="victim">
   <input type="submit" value="Stalk!">
-  </form>'
+  </form>' + links
 end
 post '/form' do
   redirect "/stalker/" + params[:victim]
@@ -47,7 +47,7 @@ get "/stalker/:victim" do
   array = []
   a = []
   if user != nil
-    html = "<!DOCTYPE html><html><head><center><h1>instaStalker for user <b>#{user.username}</b> | ID: #{user.id}</h1></br><img src='#{user.profile_picture}' height='60px'></img></br><a href='../search'>New Search</a></br>"
+    html = "<!DOCTYPE html><html><head><center><h1>instaStalker for user <b>#{user.username}</b> | ID: #{user.id}</h1></br><img src='#{user.profile_picture}' ></img></br><a href='../search'>New Search</a></br>"
     for media_item in client.user_recent_media(user.id, options={:count => "-1"})
       if media_item.location != nil
         count = count + 1
@@ -84,12 +84,20 @@ get "/stalker/:victim" do
         <div id="map_canvas"></div>
       </body></html>'
     else
-      html << "Sorry, user hasn't geotagged any photos :/"
+      html << "Sorry, #{user.username} hasn't geotagged any photos :/"
     end
    end
   if victim_ig.nil?
-    '<h1>Sorry, user not found :/'
+    '<center><h1>Sorry, user not found :/</br>' + links
   else
-    html
+    html + links
   end
+end
+
+get "/about" do
+  'This is the about page'
+end
+
+def links
+  '<a href="/about">About</a>'
 end

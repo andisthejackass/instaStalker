@@ -11,7 +11,11 @@ Instagram.configure do |conf|
 end
 
 get "/" do
-  '<a href="/oauth/connect">Connect with Instagram</a>'
+  '<link rel="stylesheet" type="text/css" href="../css/style.css" />
+  <center><h1>In order to use instaStalker, you need to authorize it first
+  <div id="connect_container">
+    <a href="/oauth/connect" id="connect"><span class="wootspan"></span></a>
+  </div>'
 end
 
 get "/oauth/connect" do
@@ -25,7 +29,7 @@ get "/oauth/callback" do
 end
 
 get "/search" do
-  '<h1>Enter a username you want to search: </br>
+  '<center><h1>Enter a username you want to search: </br>
   <form action="/form" method="post">
   <input type="text" name="victim">
   <input type="submit" value="Stalk!">
@@ -43,7 +47,7 @@ get "/stalker/:victim" do
   array = []
   a = []
   if user != nil
-    html = "<!DOCTYPE html><html><head><h1>instaStalker for user <b>#{user.username}</b> <img src='#{user.profile_picture}'></img>| ID: #{user.id}</h1></br><a href='../search'>New Search</a></br>"
+    html = "<!DOCTYPE html><html><head><center><h1>instaStalker for user <b>#{user.username}</b> | ID: #{user.id}</h1></br><img src='#{user.profile_picture}' height='60px'></img></br><a href='../search'>New Search</a></br>"
     for media_item in client.user_recent_media(user.id, options={:count => "-1"})
       if media_item.location != nil
         count = count + 1
@@ -53,7 +57,7 @@ get "/stalker/:victim" do
     end
     freq = array.inject(Hash.new(0)) { |h,v| h[v] += 1; h }
     top_array = array.sort_by { |v| freq[v] }.last
-    times = freq.first[1]
+    times = freq.first[1] unless freq.first.nil?
     if top_array != nil
       victim_location = top_array.scan(/.{6}|.+/).join(",")
       html << "Out of <b>#{count}</b> geotagged photos <b>#{times}</b> were taken @ <b>#{victim_location} "

@@ -53,11 +53,12 @@ get "/stalker/:victim" do
     end
     freq = array.inject(Hash.new(0)) { |h,v| h[v] += 1; h }
     top_array = array.sort_by { |v| freq[v] }.last
+    times = freq.first[1]
     if top_array != nil
       victim_location = top_array.scan(/.{6}|.+/).join(",")
-      html << "Out of #{count} locations, the victim's location is probaly <b>#{victim_location}</b>"
+      html << "Out of <b>#{count}</b> geotagged photos <b>#{times}</b> were taken @ <b>#{victim_location} "
       html << '<link rel="stylesheet" type="text/css" href="../css/style.css" />'
-      html << '</style><script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+      html << '<script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
         <script>
           function initialize() {
             var myLatlng = new google.maps.LatLng(' + victim_location + ');
@@ -79,7 +80,7 @@ get "/stalker/:victim" do
         <div id="map_canvas"></div>
       </body></html>'
     else
-      html << "No locs - sorry"
+      html << "Sorry, user hasn't geotagged any photos :/"
     end
    end
   if victim_ig.nil?

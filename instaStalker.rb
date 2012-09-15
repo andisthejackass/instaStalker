@@ -3,7 +3,7 @@ require "sinatra"
 
 enable :sessions
 
-CALLBACK_URL = "http://localhost:4567/oauth/callback"
+CALLBACK_URL = "http://instastalker.herokuapp.com/oauth/callback"
 
 Instagram.configure do |conf|
   conf.client_id = "93d1fb42db9345a1bae22664f93de3ec"

@@ -33,7 +33,7 @@ get "/search" do
   <form action="/form" method="post">
   <input type="text" name="victim">
   <input type="submit" value="Stalk!">
-  </form>' + links
+  </form><h4>E.g. <b>dens</b> or <b>jack</b> :)</h4></br>' + links
 end
 post '/form' do
   redirect "/stalker/" + params[:victim]
@@ -98,7 +98,8 @@ get "/stalker/:victim" do
 end
 
 get "/about" do
-  'This is the about page'
+  '<center><h2>instaStalker was made in order to raise awareness in the geolocation feature offered by Instagram.</br>
+  While geolocation is great and fun, some privacy issues may rise without the users\' knowledge. For example, some users (some meaning me and not sure if anyone else...) like to take photos with their phone camera and then when they get home to their precious WiFi upload the pictures to Instagram. If you don\'t add a venue to your photo (which is optional), Instagram will take your current location and put it in the Photo Map. So, if you upload many pictures that way, well someone may take a guess on where you kinda live :) </h2></br><a href="/search">Back to instaStalker</a>'
 end
 
 def links

@@ -15,7 +15,7 @@ get "/" do
   <center><h1>In order to use instaStalker, you need to authorize it first
   <div id="connect_container">
     <a href="/oauth/connect" id="connect"><span class="wootspan"></span></a>
-  </div>' + links
+  </div></br>' + links
 end
 
 get "/oauth/connect" do

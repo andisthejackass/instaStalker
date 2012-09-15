@@ -12,7 +12,7 @@ end
 
 get "/" do
   '<link rel="stylesheet" type="text/css" href="../css/style.css" />
-  <center><h1>In order to use instaStalker, you need to authorize it first
+  <center><h1>In order to use instaStalker, you need to authorize it first</h1>
   <div id="connect_container">
     <a href="/oauth/connect" id="connect"><span class="wootspan"></span></a>
   </div></br>' + links
@@ -99,7 +99,7 @@ end
 
 get "/about" do
   '<center><h2>instaStalker was made in order to raise awareness in the geolocation feature offered by Instagram.</br>
-  While geolocation is great and fun, some privacy issues may rise without the users\' knowledge. For example, some users (some meaning me and not sure if anyone else...) like to take photos with their phone camera and then when they get home to their precious WiFi upload the pictures to Instagram. If you don\'t add a venue to your photo (which is optional), Instagram will take your current location and put it in the Photo Map. So, if you upload many pictures that way, well someone may take a guess on where you kinda live :) </br>Feel free to contact me for suggestions, bugs or if you\'re bored at andisthejackassatgmaildotcom</br>Connect icons by <a href="http://designmoo.com/3535/instagram-sign-in-buttons">Murat Mutlu</a></h2></br><a href="javascript: history.go(-1)">Back to instaStalker</a>'
+  While geolocation is great and fun, some privacy issues may rise without the users\' knowledge. For example, some users (some meaning me and not sure if anyone else...) like to take photos with their phone camera and then when they get home to their precious WiFi upload the pictures to Instagram. If you don\'t add a venue to your photo (which is optional), Instagram will take your current location and put it in the Photo Map. So, if you upload many pictures that way, well someone may take a guess on where you kinda live :) </br></br></br>Feel free to contact me for suggestions, bugs or if you\'re bored at andisthejackassatgmaildotcom</br>Connect icons by <a href="http://designmoo.com/3535/instagram-sign-in-buttons">Murat Mutlu</a></h2></br><a href="javascript: history.go(-1)">Back to instaStalker</a>'
 end
 
 def links

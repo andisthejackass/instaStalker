@@ -7,10 +7,10 @@ Requirements
 ------------
 You'll need ruby installed on your system (I'm using v1.9.2) along with some gems (sinatra, instagram). Run
 
-  bundle install
+    bundle install
 
 in order to install the gems and then
 
-  ruby instaStalker.rb
+    ruby instaStalker.rb
 
 and the app should start running on localhost:4567
